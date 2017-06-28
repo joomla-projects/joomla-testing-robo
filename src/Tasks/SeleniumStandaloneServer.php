@@ -237,7 +237,7 @@ final class SeleniumStandaloneServer extends GenericTask
 	 */
 	protected function _waitForSelenium()
 	{
-		$this->printTaskInfo('Waiting for Selenium Standalone server to launch');
+		$this->printTaskInfo('Waiting for Selenium Standalone server to launch...');
 		$timeout = 0;
 
 		if (!$this->isWindows())
