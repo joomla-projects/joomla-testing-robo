@@ -240,18 +240,25 @@ final class SeleniumStandaloneServer extends GenericTask
 		$this->printTaskInfo('Waiting for Selenium Standalone server to launch');
 		$timeout = 0;
 
-		while (!$this->isUrlAvailable($this->url . '/wd/hub'))
+		if (!$this->isWindows())
 		{
-			// If selenium has not started after the given number of seconds then die
-			if ($timeout > $this->timeOut)
+			while (!$this->isUrlAvailable($this->url . '/wd/hub'))
 			{
-				$this->printTaskError('Selenium server execution failed (timeout expired)');
+				// If selenium has not started after the given number of seconds then die
+				if ($timeout > $this->timeOut)
+				{
+					$this->printTaskError('Selenium server execution failed (timeout expired)');
 
-				return false;
+					return false;
+				}
+
+				sleep(1);
+				$timeout++;
 			}
-
-			sleep(1);
-			$timeout++;
+		}
+		else
+		{
+			sleep(10);
 		}
 
 		$this->printTaskSuccess('Selenium server is executing correctly');
