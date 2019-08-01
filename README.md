@@ -128,8 +128,9 @@ Methods to report back failures
 * **setImagesToUpload($images):** Sets an array of images to be uploaded by Cloudinary
 * **setFolderImagesToUpload($path):** Sets a full folder with images to be uploaded by Cloudinary
 * **setGithubToken($githubToken):**  Sets up the Github token to make reporting errors done to the Github Pull Request.
-* **setGithubRepo($githubRepo):**  Sets the owner/repo combination of the Github repository.
-* **setGithubPR($githubPR):**  Sets the number of the Github Pull Request.
+* **setRepoUrl($repoUrl):**  Sets the URL of the repository.
+* **setRepoPath($repoPath):**  Sets the path of the repository.
+* **setPrNo($prNo):**  Sets the number of the Pull Request.
 * **setUploadedImagesURLs($uploadedImagesURLs):** When not using Cloudinary, allows setting up the array of image URLs to be appended to the comment in the PR.
 * **setTapLog($tapLog):** Sets the tap log to be sent to the reporting system.
 * **setBuildURL($buildURL):** Sets the URL of the build system with the full test log
@@ -152,8 +153,9 @@ $this->taskReporting()
     ->setCloudinaryApiKey('<api key>')
     ->setCloudinaryApiSecret('<api secret>')
     ->setGithubToken('<github token>')
-    ->setGithubRepo('<owner/repo>')
-    ->setGithubPR('<PR #>')
+    ->setRepoUrl('<repo URL>')
+    ->setRepoPath('<repo path>')
+    ->setPrNo('<PR #>')
     ->setImagesToUpload([
         '/path/to/image',
         '/path/to/image'
@@ -175,8 +177,9 @@ $this->taskReporting()
     ->setCloudinaryCloudName('<cloud>')
     ->setCloudinaryApiKey('<api key>')
     ->setCloudinaryApiSecret('<api secret>')
-    ->setGithubRepo('<owner/repo>')
-    ->setGithubPR('<PR #>')
+    ->setRepoUrl('<repo URL>')
+    ->setRepoPath('<repo path>')
+    ->setPrNo('<PR #>')
     ->setSlackWebhook('<URL>')
     ->setSlackChannel('#slack-channel')
     ->setImagesToUpload([

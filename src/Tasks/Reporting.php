@@ -68,22 +68,31 @@ final class Reporting extends GenericTask
 	private $githubToken = '';
 
 	/**
-	 * Github repository (owner/repo)
+	 * Repository URL
 	 *
 	 * @var     string
 	 *
 	 * @since   1.0.0
 	 */
-	private $githubRepo = '';
+	private $repoUrl = '';
 
 	/**
-	 * Github Pull Request number
+	 * Repository path
+	 *
+	 * @var     string
+	 *
+	 * @since   1.0.0
+	 */
+	private $repoPath = '';
+
+	/**
+	 * Pull Request number
 	 *
 	 * @var     integer
 	 *
 	 * @since   1.0.0
 	 */
-	private $githubPR = 0;
+	private $prNo = 0;
 
 	/**
 	 * Array of images to upload (local paths)
@@ -213,33 +222,49 @@ final class Reporting extends GenericTask
 	}
 
 	/**
-	 * Sets the Github repository (owner/repo)
+	 * Sets the Repository URL
 	 *
-	 * @param   string  $githubRepo  Github repository
+	 * @param   string  $repoUrl  Repository URL
 	 *
 	 * @return  $this
 	 *
 	 * @since   1.0.0
 	 */
-	public function setGithubRepo($githubRepo)
+	public function setRepoUrl($repoUrl)
 	{
-		$this->githubRepo = $githubRepo;
+		$this->repoUrl = $repoUrl;
 
 		return $this;
 	}
 
 	/**
-	 * Sets the Github Pull Request number
+	 * Sets the Repository path
 	 *
-	 * @param   int  $githubPR  Github pull request number
+	 * @param   string  $repoPath  Repository path
 	 *
 	 * @return  $this
 	 *
 	 * @since   1.0.0
 	 */
-	public function setGithubPR($githubPR)
+	public function setRepoPath($repoPath)
 	{
-		$this->githubPR = $githubPR;
+		$this->repoPath = $repoPath;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the Pull Request number
+	 *
+	 * @param   int  $prNo  Pull request number
+	 *
+	 * @return  $this
+	 *
+	 * @since   1.0.0
+	 */
+	public function setPrNo($prNo)
+	{
+		$this->prNo = $prNo;
 
 		return $this;
 	}
@@ -516,8 +541,8 @@ final class Reporting extends GenericTask
 
 		$repoMatches = array();
 
-		if (empty($this->githubToken) || empty($this->githubRepo)
-			|| !preg_match('/([0-9a-z_-]+)\/([0-9a-z_-]+)/i', $this->githubRepo, $repoMatches) || !$this->githubPR)
+		if (empty($this->githubToken) || empty($this->repoPath)
+			|| !preg_match('/([0-9a-z_-]+)\/([0-9a-z_-]+)/i', $this->repoPath, $repoMatches) || !$this->prNo)
 		{
 			$this->printTaskError('Valid Github token repository and pull request number were not provided');
 
@@ -552,7 +577,7 @@ final class Reporting extends GenericTask
 			$github
 				->api('issue')
 				->comments()->create(
-					$repositoryOwner, $repositoryName, $this->githubPR,
+					$repositoryOwner, $repositoryName, $this->prNo,
 					array(
 						'body'  => $commentBody
 					)
@@ -581,8 +606,8 @@ final class Reporting extends GenericTask
 
 		$repoMatches = array();
 
-		if (empty($this->githubRepo) || !preg_match('/([0-9a-z_-]+)\/([0-9a-z_-]+)/i', $this->githubRepo, $repoMatches)
-			|| !$this->githubPR)
+		if (empty($this->repoPath) || !preg_match('/([0-9a-z_-]+)\/([0-9a-z_-]+)/i', $this->repoPath, $repoMatches)
+			|| !$this->prNo)
 		{
 			$this->printTaskError('Valid Github repository and pull request number were not provided');
 
@@ -603,11 +628,20 @@ final class Reporting extends GenericTask
 			return false;
 		}
 
-		$repositoryName = $repoMatches[2];
-		$reportedRepository = 'https://github.com/' . $this->githubRepo;
-		$reportedPR = $reportedRepository . '/pull/' . $this->githubPR;
+		$repositoryName     = $repoMatches[2];
+		$reportedRepository = $this->repoUrl . '/' . $this->repoPath;
+
+		if (strpos($this->repoUrl, 'github') !== false)
+		{
+			$reportedPR = $reportedRepository . '/pull/' . $this->prNo;
+		}
+		elseif (strpos($this->repoUrl, 'gitlab') !== false)
+		{
+			$reportedPR = $reportedRepository . '/merge_requests/' . $this->prNo;
+		}
+
 		$reportedImage = '';
-		$reportedError = 'Automated testing error in ' . $repositoryName . ' - Pull Request #' . $this->githubPR;
+		$reportedError = 'Automated testing error in ' . $repositoryName . ' - Pull Request #' . $this->prNo;
 
 		if (!empty($this->uploadedImagesURLs))
 		{
