@@ -9,6 +9,8 @@
 
 namespace Joomla\Testing\Robo\Tasks\Traits;
 
+use Symfony\Component\Process\Process;
+
 /**
  * Trait for OS-related functions
  *
